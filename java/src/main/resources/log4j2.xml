@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2014-2017 BeeswaxIO Corporation.
+    Portions may be licensed to BeeswaxIO Corporation under one or more contributor license agreements.
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
+    on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and limitations under the License.
+ -->
+
+<Configuration monitorInterval="30">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{3}:%line - %msg%n" />
+    </Console>
+    <RollingFile name="LogFile" fileName="/var/log/beeswax/hexbid/hexbid.log"
+      filePattern="/var/log/beeswax/hexbid/hexbid-%d{yyyy-MM-dd-HH-mm-ss}-%i.log.gz">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{3}:%line - %msg%n" />
+      <SizeBasedTriggeringPolicy size="500 MB" />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console" level="info"/>
+    </Root>
+    <Logger name="com.beeswax.hexbid" level="info">
+      <AppenderRef ref="LogFile" level="info"/>
+    </Logger>
+  </Loggers>
+</Configuration>
