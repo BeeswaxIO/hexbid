@@ -5,7 +5,7 @@ node {
 
     stage ('Clone') {
         cleanWs()
-        git url: 'git@bitbucket.org:elx_pete/com-elyxor-testautomation-demo.git'
+        git url: 'git@github.com:ElyxorCorp/hexbid.git'
     }
 
     stage ('Artifactory configuration') {
@@ -25,11 +25,11 @@ node {
     }
 
     stage ('Test') {
-        rtGradle.run buildFile: 'build.gradle', tasks: 'clean test'
+        rtGradle.run rootDir: 'java/', buildFile: 'build.gradle', tasks: 'clean test'
     }
 
     stage ('Deploy') {
-        rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish', buildInfo: buildInfo
+        rtGradle.run rootDir: 'java/', buildFile: 'build.gradle', tasks: 'artifactoryPublish', buildInfo: buildInfo
         rtGradle.deployer.deployArtifacts buildInfo
     }
 
