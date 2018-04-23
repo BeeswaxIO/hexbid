@@ -1,21 +1,25 @@
-//buildscript{
-//    ext {
-//        branch = System.getenv('BRANCH_NAME') != null ? System.getenv('BRANCH_NAME') :
-//                ( System.getenv('USER')!=null ? System.getenv('USER') : System.getenv('USERNAME') )
-//        dependencyRepo = ( branch == "release" ? "libs-release" : "libs-snapshot" )
-//        deployVersion = ( branch == "release" ? project.version : "${project.version}-SNAPSHOT" )
-//    }
-//    repositories {
-//        maven { url "$artifactoryUrl/$dependencyRepo"}
-//        mavenCentral()
-//    }
-//}
+buildscript{
+    ext {
+        branch = System.getenv('BRANCH_NAME') != null ? System.getenv('BRANCH_NAME') :
+                ( System.getenv('USER')!=null ? System.getenv('USER') : System.getenv('USERNAME') )
+        dependencyRepo = ( branch == "release" ? "libs-release" : "libs-snapshot" )
+        deployVersion = ( branch == "release" ? project.version : "${project.version}-SNAPSHOT" )
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+    repositories {
+        maven { url "$artifactoryUrl/$dependencyRepo"}
+        mavenCentral()
+    }
+}
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'idea'
 apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 ext.beeswaxVersion = "2017-03-16"
 
@@ -60,6 +64,14 @@ jar {
                 'Main-Class': project.mainClassName
         )
     }
+}
+
+//below configuration will overwrite normal .jar artifact by following same naming standards
+//created artifact will be shadow-jar (a.k.a. uber-jar, or fat-jar) for self-execution
+shadowJar {
+    baseName = project.name
+    classifier = null //removes *-all.jar
+    version = deployVersion
 }
 
 task sourcesJar(type: Jar) {
