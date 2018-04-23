@@ -1,9 +1,25 @@
+//buildscript{
+//    ext {
+//        branch = System.getenv('BRANCH_NAME') != null ? System.getenv('BRANCH_NAME') :
+//                ( System.getenv('USER')!=null ? System.getenv('USER') : System.getenv('USERNAME') )
+//        dependencyRepo = ( branch == "release" ? "libs-release" : "libs-snapshot" )
+//        deployVersion = ( branch == "release" ? project.version : "${project.version}-SNAPSHOT" )
+//    }
+//    repositories {
+//        maven { url "$artifactoryUrl/$dependencyRepo"}
+//        mavenCentral()
+//    }
+//}
+
 apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'idea'
+apply plugin: 'application'
 
 ext.beeswaxVersion = "2017-03-16"
+
+mainClassName = 'com.beeswax.hexbid.server.HexbidServer'
 
 repositories {
     maven { url "http://repo.maven.apache.org/maven2" }
@@ -37,7 +53,7 @@ jar {
                 "Specification-Vendor": mftVendor,
                 "Bundle-License": pomLicense,
                 'Class-Path': configurations.runtime.files.collect { "../lib/$it.name" }.join(' ') + " ../conf/",
-//                'Main-Class': project.mainClassName
+                'Main-Class': project.mainClassName
         )
     }
 }
@@ -74,3 +90,10 @@ publishing {
         }
     }
 }
+
+artifacts {
+    archives jar
+    archives sourcesJar
+}
+
+build.dependsOn('clean', 'sourcesJar')
