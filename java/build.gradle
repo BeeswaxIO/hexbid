@@ -75,7 +75,6 @@ jar {
 //created artifact will be shadow-jar (a.k.a. uber-jar, or fat-jar) for self-execution
 shadowJar {
     baseName = project.name
-    classifier = 'all'
     version = deployVersion
 }
 
