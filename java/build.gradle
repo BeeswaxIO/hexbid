@@ -79,40 +79,50 @@ shadowJar {
 //    from sourceSets.main.allJava
 //}
 
+//publishing {
+//    publications {
+//        maven(MavenPublication) {
+//            from components.java
+//            pom.withXml {
+//                def root = asNode()
+//
+//                root.appendNode("name", mftTitle)
+//                root.appendNode("description", mftTitle)
+//                root.appendNode("url", project.scmUrl)
+//                def organization = new Node(root, "organization")
+//                organization.appendNode("name", mftVendor)
+//                organization.appendNode("url", mftVendorUrl)
+//                def license = new Node(new Node(root, "licenses"), "license")
+//                license.appendNode('name', pomLicense)
+//                license.appendNode('distribution', 'repo')
+//                def scm = new Node(root, "scm")
+//                scm.appendNode("connection", scmConnection)
+//                scm.appendNode("developerConnection", scmDevConnection)
+//                scm.appendNode("url", scmUrl)
+//                def dependencies = root.get("dependencies")
+//                root.remove(dependencies)
+//                root.append(dependencies)
+//            }
+//        }
+//    }
+//}
+
 publishing {
     publications {
-        maven(MavenPublication) {
-            from components.java
-            pom.withXml {
-                def root = asNode()
-
-                root.appendNode("name", mftTitle)
-                root.appendNode("description", mftTitle)
-                root.appendNode("url", project.scmUrl)
-                def organization = new Node(root, "organization")
-                organization.appendNode("name", mftVendor)
-                organization.appendNode("url", mftVendorUrl)
-                def license = new Node(new Node(root, "licenses"), "license")
-                license.appendNode('name', pomLicense)
-                license.appendNode('distribution', 'repo')
-                def scm = new Node(root, "scm")
-                scm.appendNode("connection", scmConnection)
-                scm.appendNode("developerConnection", scmDevConnection)
-                scm.appendNode("url", scmUrl)
-                def dependencies = root.get("dependencies")
-                root.remove(dependencies)
-                root.append(dependencies)
-            }
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
         }
     }
+    repositories {
+        maven { url "$artifactoryUrl/$dependencyRepo"}
+    }
 }
-
 artifacts {
     archives shadowJar
 }
 
 distTar.enabled = false
-distZip.enabled = false
+distZip.enabled = true
 
 //build.dependsOn('clean', 'sourcesJar')
 build.dependsOn('clean')
