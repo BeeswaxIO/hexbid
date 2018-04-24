@@ -69,7 +69,6 @@ task wrapper(type: Wrapper) {
 //below configuration will overwrite normal .jar artifact by following same naming standards
 //created artifact will be shadow-jar (a.k.a. uber-jar, or fat-jar) for self-execution
 shadowJar {
-    attributes 'Main-Class': project.mainClassName
     baseName = project.name
     classifier = 'all'
     version = deployVersion
