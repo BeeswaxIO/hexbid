@@ -4,8 +4,12 @@ node {
     def rtGradle
 
     stage ('Clone') {
-        cleanWs()
-        git url: 'git@github.com:ElyxorCorp/hexbid.git'
+        checkout([
+          $class: 'GitSCM',
+          branches: [[name: '*/jenkins']],
+          userRemoteConfigs: [[url: 'git@github.com:ElyxorCorp/hexbid.git'],
+          [credentialsId:'elx-bot-ssh']]
+        ])
     }
 
     stage ('Artifactory configuration') {
