@@ -74,10 +74,10 @@ jar {
 //    version = deployVersion
 //}
 
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allJava
-}
+//task sourcesJar(type: Jar) {
+//    classifier 'sources'
+//    from sourceSets.main.allJava
+//}
 
 publishing {
     publications {
@@ -107,9 +107,10 @@ publishing {
     }
 }
 
-artifacts {
-    archives jar
-    archives sourcesJar
-}
+//artifacts {
+//    archives jar
+//    archives sourcesJar
+//}
 
-build.dependsOn('clean', 'sourcesJar')
+//build.dependsOn('clean', 'sourcesJar')
+build.dependsOn('clean')
