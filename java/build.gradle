@@ -49,22 +49,22 @@ task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
 }
 
-jar {
-    manifest {
-        attributes (
-                'Implementation-Title': (project.group + "." + project.name),
-                'Implementation-Version': version,
-                'Implementation-Timestamp': new Date(),
-                "Implementation-Vendor": mftVendor,
-                "Specification-Title": mftTitle,
-                "Specification-Version": version,
-                "Specification-Vendor": mftVendor,
-                "Bundle-License": pomLicense,
-                'Class-Path': configurations.runtime.files.collect { "../lib/$it.name" }.join(' ') + " ../conf/",
-                'Main-Class': project.mainClassName
-        )
-    }
-}
+//jar {
+//    manifest {
+//        attributes (
+//                'Implementation-Title': (project.group + "." + project.name),
+//                'Implementation-Version': version,
+//                'Implementation-Timestamp': new Date(),
+//                "Implementation-Vendor": mftVendor,
+//                "Specification-Title": mftTitle,
+//                "Specification-Version": version,
+//                "Specification-Vendor": mftVendor,
+//                "Bundle-License": pomLicense,
+//                'Class-Path': configurations.runtime.files.collect { "../lib/$it.name" }.join(' ') + " ../conf/",
+//                'Main-Class': project.mainClassName
+//        )
+//    }
+//}
 
 //below configuration will overwrite normal .jar artifact by following same naming standards
 //created artifact will be shadow-jar (a.k.a. uber-jar, or fat-jar) for self-execution
