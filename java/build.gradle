@@ -66,6 +66,11 @@ task wrapper(type: Wrapper) {
 //    }
 //}
 
+jar {
+    enabled = false
+    dependsOn(shadowJar { classifier = null })
+}
+
 //below configuration will overwrite normal .jar artifact by following same naming standards
 //created artifact will be shadow-jar (a.k.a. uber-jar, or fat-jar) for self-execution
 shadowJar {
@@ -114,7 +119,7 @@ publishing {
         }
     }
     repositories {
-        maven { url "$artifactoryUrl/libs-snapshot"}
+        maven { url "$artifactoryUrl/$dependencyRepo"}
     }
 }
 
