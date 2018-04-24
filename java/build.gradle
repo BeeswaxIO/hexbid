@@ -117,9 +117,7 @@ publishing {
         maven { url "$artifactoryUrl/$dependencyRepo"}
     }
 }
-artifacts {
-    archives shadowJar
-}
+
 
 //build.dependsOn('clean', 'sourcesJar')
 build.dependsOn('clean')
