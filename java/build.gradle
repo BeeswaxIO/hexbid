@@ -68,11 +68,11 @@ jar {
 
 //below configuration will overwrite normal .jar artifact by following same naming standards
 //created artifact will be shadow-jar (a.k.a. uber-jar, or fat-jar) for self-execution
-shadowJar {
-    baseName = project.name
-    classifier = 'all'
-    version = deployVersion
-}
+//shadowJar {
+//    baseName = project.name
+//    classifier = 'all'
+//    version = deployVersion
+//}
 
 task sourcesJar(type: Jar) {
     classifier 'sources'
