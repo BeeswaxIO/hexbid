@@ -68,11 +68,12 @@ task wrapper(type: Wrapper) {
 
 //below configuration will overwrite normal .jar artifact by following same naming standards
 //created artifact will be shadow-jar (a.k.a. uber-jar, or fat-jar) for self-execution
-//shadowJar {
-//    baseName = project.name
-//    classifier = 'all'
-//    version = deployVersion
-//}
+shadowJar {
+    attributes 'Main-Class': project.mainClassName
+    baseName = project.name
+    classifier = 'all'
+    version = deployVersion
+}
 
 //task sourcesJar(type: Jar) {
 //    classifier 'sources'
@@ -107,10 +108,9 @@ publishing {
     }
 }
 
-//artifacts {
-//    archives jar
-//    archives sourcesJar
-//}
+artifacts {
+    archives shadowJar
+}
 
 //build.dependsOn('clean', 'sourcesJar')
 build.dependsOn('clean')
