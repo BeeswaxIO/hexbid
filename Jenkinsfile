@@ -7,11 +7,11 @@ node {
         checkout([
           $class: 'GitSCM',
           branches: [[name: '*/jenkins']],
-          userRemoteConfigs: [[url: 'git@github.com:ElyxorCorp/hexbid.git'],
-          [credentialsId:'elx-bot-ssh']]
+          userRemoteConfigs: [[url: 'https://github.com/ElyxorCorp/hexbid.git'],
+          [credentialsId:'elx-bot-ssh']],
+          extensions: scm.extensions + [[$class: 'CleanBeforeCheckout']],
         ])
     }
-
     stage ('Artifactory configuration') {
         server = Artifactory.server "artifactory-elyxor"
 
