@@ -110,4 +110,9 @@ publishing {
     }
 }
 
+distZip.enabled = true
+distTar.enabled = true
+shadowDistTar.enabled = true
+shadowDistZip.enabled = false
+
 build.dependsOn('clean')
