@@ -99,10 +99,10 @@ publishing {
     }
 }
 
-artifacts {
-    archives jar
-    archives sourcesJar
-}
+//artifacts {
+//    archives jar
+//    archives sourcesJar
+//}
 
 distZip.enabled = true
 distTar.enabled = true
