@@ -19,10 +19,11 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'idea'
+apply plugin: 'application'
 
 ext.beeswaxVersion = "2017-03-16"
 version = deployVersion
-ext.mainClassName = 'com.beeswax.hexbid.server.HexbidServer'
+mainClassName = 'com.beeswax.hexbid.server.HexbidServer'
 
 repositories {
     maven { url "http://repo.maven.apache.org/maven2" }
@@ -65,10 +66,10 @@ jar {
     }
 }
 
-//task sourcesJar(type: Jar) {
-//    classifier 'sources'
-//    from sourceSets.main.allJava
-//}
+task sourcesJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allJava
+}
 
 publishing {
     publications {
@@ -98,10 +99,14 @@ publishing {
     }
 }
 
-//artifacts {
-//    archives jar
-//    archives sourcesJar
-//}
+artifacts {
+    archives jar
+    archives sourcesJar
+}
 
-build.dependsOn('clean')
-//build.dependsOn('clean', 'sourcesJar')
+distZip.enabled = false
+distTar.enabled = false
+shadowDistTar.enabled = false
+shadowDistZip.enabled = true
+
+build.dependsOn('clean', 'sourcesJar')
