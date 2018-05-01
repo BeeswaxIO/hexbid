@@ -12,6 +12,7 @@ node {
           extensions: scm.extensions + [[$class: 'CleanBeforeCheckout']],
         ])
     }
+
     stage ('Artifactory configuration') {
         server = Artifactory.server "artifactory-elyxor"
 
@@ -25,7 +26,7 @@ node {
     }
 
     stage ('Build Java Refimpl Project') {
-        rtGradle.run rootDir: 'java/', buildFile: 'build.gradle', tasks: 'clean build'
+        rtGradle.run rootDir: 'java/', buildFile: 'build.gradle', tasks: 'clean shadowJar'
     }
 
     stage ('Test') {
@@ -33,7 +34,6 @@ node {
     }
 
     stage ('Deploy') {
-        echo buildInfo
         rtGradle.run rootDir: 'java/', buildFile: 'build.gradle', tasks: 'artifactoryPublish', buildInfo: buildInfo
         rtGradle.deployer.deployArtifacts buildInfo
     }

@@ -19,11 +19,10 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'idea'
-apply plugin: 'application'
 
 ext.beeswaxVersion = "2017-03-16"
 version = deployVersion
-mainClassName = 'com.beeswax.hexbid.server.HexbidServer'
+ext.mainClassName = 'com.beeswax.hexbid.server.HexbidServer'
 
 repositories {
     maven { url "http://repo.maven.apache.org/maven2" }
