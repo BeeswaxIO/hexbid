@@ -26,7 +26,7 @@ node {
     }
 
     stage ('Build Java Refimpl Project') {
-        rtGradle.run rootDir: 'java/', buildFile: 'build.gradle', tasks: 'clean shadowJar'
+        rtGradle.run rootDir: 'java/', buildFile: 'build.gradle', tasks: 'clean build'
     }
 
     stage ('Test') {
