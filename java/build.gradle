@@ -66,47 +66,48 @@ jar {
     }
 }
 
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allJava
+shadowJar {
+    classifier = 'fat'
+    manifest {
+        attributes "Main-Class": project.mainClassName
+    }
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    baseName = project.name
+    from sourceSets.main.allSource
 }
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            from components.java
-            pom.withXml {
-                def root = asNode()
-
-                root.appendNode("name", mftTitle)
-                root.appendNode("description", mftTitle)
-                root.appendNode("url", project.scmUrl)
-                def organization = new Node(root, "organization")
-                organization.appendNode("name", mftVendor)
-                organization.appendNode("url", mftVendorUrl)
-                def license = new Node(new Node(root, "licenses"), "license")
-                license.appendNode('name', pomLicense)
-                license.appendNode('distribution', 'repo')
-                def scm = new Node(root, "scm")
-                scm.appendNode("connection", scmConnection)
-                scm.appendNode("developerConnection", scmDevConnection)
-                scm.appendNode("url", scmUrl)
-                def dependencies = root.get("dependencies")
-                root.remove(dependencies)
-                root.append(dependencies)
+        json4j(MavenPublication) {
+            version project.version
+            artifact jar
+            artifact shadowJar
+            artifact sourceJar { classifier 'sources' }
+             pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name mftTitle
+                    description mftDescription
+                    url scmUrl
+                    scm {
+                        url scmUrl
+                        connection scmConnection
+                        developerConnection scmDevConnection
+                    }
+                    licenses {
+                        license {
+                            name pomLicense
+                            url pomLicense
+                            //Distribution 'repo'
+                        }
+                    }
+                }
             }
         }
     }
 }
 
-//artifacts {
-//    archives jar
-//    archives sourcesJar
-//}
-
-distZip.enabled = true
-distTar.enabled = true
-shadowDistTar.enabled = false
-shadowDistZip.enabled = false
-
-build.dependsOn('clean', 'sourcesJar')
+build.dependsOn('clean')
