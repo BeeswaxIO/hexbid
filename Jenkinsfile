@@ -33,6 +33,7 @@ node {
     }
 
     stage ('Deploy') {
+        echo buildInfo
         rtGradle.run rootDir: 'java/', buildFile: 'build.gradle', tasks: 'artifactoryPublish', buildInfo: buildInfo
         rtGradle.deployer.deployArtifacts buildInfo
     }

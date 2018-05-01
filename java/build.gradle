@@ -9,9 +9,13 @@ buildscript{
         maven { url "$artifactoryUrl/$dependencyRepo"}
         mavenCentral()
     }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
 }
 
 apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'idea'
@@ -62,10 +66,10 @@ jar {
     }
 }
 
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allJava
-}
+//task sourcesJar(type: Jar) {
+//    classifier 'sources'
+//    from sourceSets.main.allJava
+//}
 
 publishing {
     publications {
@@ -95,9 +99,10 @@ publishing {
     }
 }
 
-artifacts {
-    archives jar
-    archives sourcesJar
-}
+//artifacts {
+//    archives jar
+//    archives sourcesJar
+//}
 
-build.dependsOn('clean', 'sourcesJar')
+build.dependsOn('clean')
+//build.dependsOn('clean', 'sourcesJar')
