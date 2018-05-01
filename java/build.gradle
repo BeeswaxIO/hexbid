@@ -104,9 +104,9 @@ artifacts {
     archives sourcesJar
 }
 
-distZip.enabled = false
+distZip.enabled = true
 distTar.enabled = false
 shadowDistTar.enabled = false
-shadowDistZip.enabled = true
+shadowDistZip.enabled = false
 
 build.dependsOn('clean', 'sourcesJar')
