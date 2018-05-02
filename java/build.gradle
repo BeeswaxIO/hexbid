@@ -84,7 +84,7 @@ publishing {
         json4j(MavenPublication) {
             version project.version
             artifact jar
-            artifact shadowJar
+            artifact shadowJar { classifier 'fat' }
             artifact sourceJar { classifier 'sources' }
              pom.withXml {
                 asNode().children().last() + {
