@@ -112,7 +112,7 @@ publishing {
 
 distZip.enabled = true
 distTar.enabled = true
-shadowDistTar.enabled = false
+shadowDistTar.enabled = true
 shadowDistZip.enabled = true
 
 build.dependsOn('clean')
