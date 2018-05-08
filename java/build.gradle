@@ -9,13 +9,9 @@ buildscript{
         maven { url "$artifactoryUrl/$dependencyRepo"}
         mavenCentral()
     }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
-    }
 }
 
 apply plugin: 'java'
-apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'idea'
@@ -66,10 +62,26 @@ jar {
     }
 }
 
-shadowJar {
+task shadowJar( type: Jar ) {
     classifier = 'fat'
+
+    from {
+        configurations.compile.resolve().collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+
     manifest {
-        attributes "Main-Class": project.mainClassName
+        attributes (
+                'Implementation-Title': (project.group + "." + project.name),
+                'Implementation-Version': version,
+                'Implementation-Timestamp': new Date(),
+                "Implementation-Vendor": mftVendor,
+                "Specification-Title": mftTitle,
+                "Specification-Version": version,
+                "Specification-Vendor": mftVendor,
+                "Bundle-License": pomLicense,
+                'Main-Class': project.mainClassName
+        )
     }
 }
 
@@ -83,10 +95,8 @@ publishing {
     publications {
         json4j(MavenPublication) {
             version project.version
-            artifact jar
-            artifact shadowJar { classifier 'fat' }
-            artifact sourceJar { classifier 'sources' }
-             pom.withXml {
+            from components.java
+            pom.withXml {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
                     name mftTitle
@@ -110,9 +120,13 @@ publishing {
     }
 }
 
+artifacts {
+    archives jar
+    archives sourceJar
+    archives shadowJar
+}
+
 distZip.enabled = true
 distTar.enabled = true
-shadowDistTar.enabled = true
-shadowDistZip.enabled = true
 
 build.dependsOn('clean')
