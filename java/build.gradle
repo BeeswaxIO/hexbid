@@ -18,7 +18,7 @@ apply plugin: 'idea'
 apply plugin: 'application'
 
 ext.beeswaxVersion = "2017-03-16"
-version = '1.0'
+version = deployVersion
 mainClassName = 'com.beeswax.hexbid.server.HexbidServer'
 
 repositories {
