@@ -1,0 +1,132 @@
+buildscript{
+    ext {
+        branch = System.getenv('BRANCH_NAME') != null ? System.getenv('BRANCH_NAME') :
+                ( System.getenv('USER')!=null ? System.getenv('USER') : System.getenv('USERNAME') )
+        dependencyRepo = ( branch == "release" ? "libs-release" : "libs-snapshot" )
+        deployVersion = ( branch == "release" ? project.version : "${project.version}-SNAPSHOT" )
+    }
+    repositories {
+        maven { url "$artifactoryUrl/$dependencyRepo"}
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+ext.beeswaxVersion = "2017-03-16"
+version = deployVersion
+mainClassName = 'com.beeswax.hexbid.server.HexbidServer'
+
+repositories {
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+    compile 'io.netty:netty-all:4.1.7.Final'
+    compile 'com.google.guava:guava:21.0'
+    compile 'org.apache.logging.log4j:log4j-api:2.7'
+    compile 'org.apache.logging.log4j:log4j-core:2.7'
+    compile "com.beeswax:beeswax-api:${beeswaxVersion}"
+    compile 'org.mockito:mockito-core:2.6.2'
+    compile 'org.apache.maven.plugins:maven-javadoc-plugin:2.10.4'
+    testCompile 'junit:junit:4.11'
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.6'
+}
+
+jar {
+    manifest {
+        attributes (
+                'Implementation-Title': (project.group + "." + project.name),
+                'Implementation-Version': version,
+                'Implementation-Timestamp': new Date(),
+                "Implementation-Vendor": mftVendor,
+                "Specification-Title": mftTitle,
+                "Specification-Version": version,
+                "Specification-Vendor": mftVendor,
+                "Bundle-License": pomLicense,
+                'Class-Path': configurations.runtime.files.collect { "../lib/$it.name" }.join(' ') + " ../conf/",
+                'Main-Class': project.mainClassName
+        )
+    }
+}
+
+task shadowJar( type: Jar ) {
+    classifier = 'fat'
+
+    from {
+        configurations.compile.resolve().collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+
+    manifest {
+        attributes (
+                'Implementation-Title': (project.group + "." + project.name),
+                'Implementation-Version': version,
+                'Implementation-Timestamp': new Date(),
+                "Implementation-Vendor": mftVendor,
+                "Specification-Title": mftTitle,
+                "Specification-Version": version,
+                "Specification-Vendor": mftVendor,
+                "Bundle-License": pomLicense,
+                'Main-Class': project.mainClassName
+        )
+    }
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    baseName = project.name
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        json4j(MavenPublication) {
+            version project.version
+            from components.java
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name mftTitle
+                    description mftDescription
+                    url scmUrl
+                    scm {
+                        url scmUrl
+                        connection scmConnection
+                        developerConnection scmDevConnection
+                    }
+                    licenses {
+                        license {
+                            name pomLicense
+                            url pomLicense
+                            //Distribution 'repo'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+artifacts {
+    archives jar
+    archives sourceJar
+    archives shadowJar
+}
+
+distZip.enabled = true
+distTar.enabled = true
+
+build.dependsOn('clean')
